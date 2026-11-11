@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chatboot/core/config/config.dart';
 import 'package:chatboot/core/di/app_dependencies.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +13,11 @@ void main() {
       final requestBodies = <Map<String, dynamic>>[];
       var interactionNumber = 0;
       final dependencies = AppDependencies.create(
-        apiKey: 'test-key',
+        config: const Config(
+          environment: 'test',
+          baseUrl: 'https://generativelanguage.googleapis.com/v1beta/',
+          apiKey: 'test-key',
+        ),
         httpClient: MockClient((request) async {
           requestBodies.add(jsonDecode(request.body) as Map<String, dynamic>);
           interactionNumber++;
@@ -48,6 +53,15 @@ void main() {
   );
 
   test('dependency injection rejects a missing API key', () {
-    expect(() => AppDependencies.create(apiKey: ' '), throwsArgumentError);
+    expect(
+      () => AppDependencies.create(
+        config: const Config(
+          environment: 'test',
+          baseUrl: 'https://generativelanguage.googleapis.com/v1beta/',
+          apiKey: ' ',
+        ),
+      ),
+      throwsArgumentError,
+    );
   });
 }

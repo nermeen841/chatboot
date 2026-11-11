@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 
+import '../config/config.dart';
 import '../../features/chat/data/services/gemini_chat_service.dart';
 import '../../features/chat/domain/services/chat_service.dart';
 import '../../features/interactions/data/datasources/interactions_remote_data_source.dart';
@@ -11,20 +12,24 @@ class AppDependencies {
   AppDependencies._({required this._apiClient, required this.chatService});
 
   factory AppDependencies.create({
-    required String apiKey,
+    required Config config,
     http.Client? httpClient,
   }) {
-    if (apiKey.trim().isEmpty) {
-      throw ArgumentError.value(apiKey, 'apiKey', 'API key must not be empty.');
+    if (!config.isConfigured) {
+      throw ArgumentError.value(
+        config.apiKey,
+        'config.apiKey',
+        'API key must not be empty.',
+      );
     }
 
     final apiClient = ApiClient(
-      baseUri: Uri.parse('https://generativelanguage.googleapis.com/v1beta/'),
+      baseUri: Uri.parse(config.baseUrl),
       client: httpClient,
     );
     final remoteDataSource = InteractionsRemoteDataSource(
       apiClient: apiClient,
-      apiKey: apiKey,
+      apiKey: config.apiKey,
     );
     final repository = InteractionRepositoryImpl(remoteDataSource);
     final createInteraction = CreateInteraction(repository);

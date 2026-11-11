@@ -1,0 +1,4 @@
+#include "Release.xcconfig"
+#include? "Signing-staging.xcconfig"
+
+APP_DISPLAY_NAME = Chatboot Staging

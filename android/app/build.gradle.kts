@@ -36,6 +36,20 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    flavorDimensions += "default"
+    productFlavors {
+        create("staging") {
+            dimension = "default"
+            applicationIdSuffix = ".staging"
+            manifestPlaceholders["appName"] = "Chatboot (Staging)"
+        }
+        create("production") {
+            dimension = "default"
+            applicationIdSuffix = ".production"
+            manifestPlaceholders["appName"] = "Chatboot"
+        }
+    }
 }
 
 kotlin {

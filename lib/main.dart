@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 
 import 'core/di/app_dependencies.dart';
+import 'core/config/config.dart';
 import 'features/chat/presentation/cubit/chat_cubit.dart';
 import 'features/chat/presentation/screens/chat_screen.dart';
 
 void main() {
-  const apiKey = String.fromEnvironment('GEMINI_API_KEY');
-  final dependencies = apiKey.trim().isEmpty
-      ? null
-      : AppDependencies.create(apiKey: apiKey);
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
+  final config = Config.fromEnvironment();
+  final dependencies = !config.isConfigured
+      ? null
+      : AppDependencies.create(config: config);
   runApp(MyApp(dependencies: dependencies));
 }
 
